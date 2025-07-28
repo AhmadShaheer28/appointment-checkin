@@ -176,6 +176,49 @@ extension String {
 }
 
 
+// MARK: - Localized Strings for CheckIn App
+extension String {
+    // Slide Titles
+    static let interpreter = "Interpreter"
+    static let evaluationAppointment = "Evaluation\nAppointment"
+    
+    // Button Labels
+    static let checkInHere = "Check-In Here"
+    static let appointmentCheckIn = "Appointment Check-In"
+    static let interpreterCheckIn = "Interpreter Check-In"
+    
+    // Team Label
+    static let aTeam = "A-TEAM"
+    
+    // Appointment Check-In Flow
+    static let caregiverFirstName = "Caregiver First Name"
+    static let caregiverLastName = "Caregiver Last Name"
+    static let childFirstName = "Child First Name"
+    static let childLastName = "Child Last Name"
+    static let continueButton = "Continue"
+    
+    // Signature Screen
+    static let pleaseSignBelow = "Please Sign Below"
+    
+    // Photo Instructions
+    static let photoInstructionTitle = "Please find your photo ID and hold it up to the camera. Make sure your face and your ID can both be seen as in the picture below."
+    static let photoInstructionSubtitle = "When you press the \"Take Photo\" button, a countdown will start, then your picture will be taken after 5 seconds."
+    static let takePhoto = "Take Photo"
+    
+    // Photo Verification
+    static let photoVerificationQuestion = "Can you see both your face and your ID card clearly in the photo below?"
+    static let acceptPhoto = "Accept Photo"
+    static let retakePhoto = "Retake Photo"
+    
+    // Confirmation
+    static let thankYouMessage = "Thank you for checking in. Your evaluator has been informed and will come to meet you at your scheduled time. Please have a seat in the lobby while you wait."
+    static let finishCheckIn = "Finish Check-In"
+    
+    // Evaluation Information
+    static let evaluationDisclaimer = "I understand that today's evaluation is not a general health exam. Our specialists cannot discuss, give opinions, or recommend treatments based on today's results. The specialist you see today does not decide your disability status. That decision is made by the agency that referred you. For questions about this evaluation, please contact the analyst handling your case. Your analyst's contact information is located on the letter you received informing you of this appointment."
+}
+
+
 extension Double {
     func toTimeString() -> String {
         let hours = Int(self / 3600)

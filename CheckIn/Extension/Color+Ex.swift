@@ -58,5 +58,10 @@ extension Color {
               }
           }
     }
+    
+    // Additional colors for the app
+    static let textPrimary = Color.black
+    static let textSecondary = Color.gray
+    static let buttonTextWhite = Color.white
 
 }

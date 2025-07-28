@@ -10,7 +10,14 @@ import SwiftUI
 
 
 enum Page: Hashable {
-    case home
+    case homeRotation
+    case menu
+    case appointmentTextEntry
+    case appointmentSignature
+    case appointmentPhotoInstruction
+    case appointmentCamera
+    case appointmentPhotoVerification
+    case appointmentConfirmation
 }
 
 
@@ -41,8 +48,22 @@ class Coordinator: ObservableObject {
     @ViewBuilder
     func build(page: Page) -> some View {
         switch page {
-        case .home:
-            EmptyView()
+        case .homeRotation:
+            HomeRotationView()
+        case .menu:
+            MenuView()
+        case .appointmentTextEntry:
+            AppointmentTextEntryView()
+        case .appointmentSignature:
+            AppointmentSignatureView()
+        case .appointmentPhotoInstruction:
+            AppointmentPhotoInstructionView()
+        case .appointmentCamera:
+            AppointmentCameraView()
+        case .appointmentPhotoVerification:
+            AppointmentPhotoVerificationView()
+        case .appointmentConfirmation:
+            AppointmentConfirmationView()
         }
         
     }
