@@ -105,6 +105,7 @@ struct AppointmentSignatureView: View {
                     // Continue button (disabled until signed)
                     Button(action: {
                         if hasSignature {
+                            IdleTimerManager.shared.userDidInteract() // Reset idle timer on button tap
                             saveSignatureToDataModel()
                             coordinator.push(.appointmentPhotoInstruction)
                         }
@@ -115,7 +116,7 @@ struct AppointmentSignatureView: View {
                             .padding(.horizontal, screenWidth * 0.1)
                             .padding(.vertical, screenHeight * 0.02)
                             .frame(maxWidth: screenWidth * 0.6)
-                            .background(hasSignature ? Color("primary_blue") : Color.gray.opacity(0.5))
+                            .background(hasSignature ? Color("primary_blue") : Color.gray)
                             .cornerRadius(12)
                     }
                     .disabled(!hasSignature)
@@ -124,6 +125,7 @@ struct AppointmentSignatureView: View {
             }
         }
         .navigationBarHidden(true)
+        .idleTimer()
     }
     
     private func saveSignatureToDataModel() {

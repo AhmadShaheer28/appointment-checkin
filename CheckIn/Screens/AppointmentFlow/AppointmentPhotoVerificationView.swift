@@ -80,6 +80,7 @@ struct AppointmentPhotoVerificationView: View {
                         // Accept Photo button
                         Button(action: {
                             // Save photo and navigate to confirmation
+                            IdleTimerManager.shared.userDidInteract() // Reset idle timer on button tap
                             savePhotoAsPDF()
                             coordinator.push(.appointmentConfirmation)
                         }) {
@@ -96,6 +97,7 @@ struct AppointmentPhotoVerificationView: View {
                         // Retake Photo button
                         Button(action: {
                             // Clear image and go back to camera
+                            IdleTimerManager.shared.userDidInteract() // Reset idle timer on button tap
                             appointmentData.capturedPhoto = nil
                             coordinator.pop()
                         }) {
@@ -114,6 +116,7 @@ struct AppointmentPhotoVerificationView: View {
             }
         }
         .navigationBarHidden(true)
+        .idleTimer()
         .onAppear {
             // For demo purposes, create a placeholder image if none exists
             if appointmentData.capturedPhoto == nil {

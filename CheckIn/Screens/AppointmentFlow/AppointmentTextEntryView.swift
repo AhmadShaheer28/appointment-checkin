@@ -16,6 +16,14 @@ struct AppointmentTextEntryView: View {
         case caregiverFirstName, caregiverLastName, childFirstName, childLastName
     }
     
+    // Computed property to check if all required fields are filled
+    private var isFormValid: Bool {
+        !appointmentData.caregiverFirstName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !appointmentData.caregiverLastName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !appointmentData.childFirstName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !appointmentData.childLastName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+    
     var body: some View {
         GeometryReader { geometry in
             let screenWidth = geometry.size.width
@@ -134,6 +142,7 @@ struct AppointmentTextEntryView: View {
                     
                     // Continue button
                     Button(action: {
+                        IdleTimerManager.shared.userDidInteract() // Reset idle timer on button tap
                         coordinator.push(.appointmentSignature)
                     }) {
                         Text(String.continueButton)
@@ -142,14 +151,16 @@ struct AppointmentTextEntryView: View {
                             .padding(.horizontal, screenWidth * 0.1)
                             .padding(.vertical, screenHeight * 0.02)
                             .frame(maxWidth: screenWidth * 0.6)
-                            .background(Color("primary_blue"))
+                            .background(isFormValid ? Color("primary_blue") : Color.gray)
                             .cornerRadius(12)
                     }
+                    .disabled(!isFormValid)
                     .padding(.bottom, screenHeight * 0.08)
                 }
             }
         }
         .navigationBarHidden(true)
+        .idleTimer()
         .onAppear {
             // Auto-focus first field when view appears
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {

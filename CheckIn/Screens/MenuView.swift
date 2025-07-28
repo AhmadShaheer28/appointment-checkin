@@ -16,7 +16,6 @@ struct MenuView: View {
             let screenHeight = geometry.size.height
             
             // Responsive sizing based on screen dimensions
-            let logoSize = min(screenWidth, screenHeight) * 0.35 // 35% of smaller dimension
             let buttonWidth = screenWidth * 0.7 // 70% of screen width
             let buttonFontSize = screenHeight * 0.03 // 3% of screen height
             let topPadding = screenHeight * 0.08 // 8% of screen height
@@ -39,6 +38,7 @@ struct MenuView: View {
                     // Menu buttons
                     VStack(spacing: buttonSpacing) {
                         Button(action: {
+                            IdleTimerManager.shared.userDidInteract() // Reset idle timer on button tap
                             coordinator.push(.appointmentTextEntry)
                         }) {
                             Text(String.appointmentCheckIn)
@@ -52,8 +52,8 @@ struct MenuView: View {
                         }
                         
                         Button(action: {
-                            // Handle interpreter check-in
-                            // TODO: Navigate to interpreter check-in flow
+                            IdleTimerManager.shared.userDidInteract() // Reset idle timer on button tap
+                            coordinator.push(.interpreterFormSignature)
                         }) {
                             Text(String.interpreterCheckIn)
                                 .font(.custom(FontStyle.medium.name, size: buttonFontSize))
@@ -73,6 +73,7 @@ struct MenuView: View {
             }
         }
         .navigationBarHidden(true)
+        .idleTimer()
 //        .gesture(
 //            // Add swipe to go back gesture
 //            DragGesture()

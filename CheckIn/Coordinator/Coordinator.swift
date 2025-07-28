@@ -18,6 +18,8 @@ enum Page: Hashable {
     case appointmentCamera
     case appointmentPhotoVerification
     case appointmentConfirmation
+    case interpreterFormSignature
+    case interpreterConfirmation
 }
 
 
@@ -64,6 +66,10 @@ class Coordinator: ObservableObject {
             AppointmentPhotoVerificationView()
         case .appointmentConfirmation:
             AppointmentConfirmationView()
+        case .interpreterFormSignature:
+            InterpreterFormSignatureView()
+        case .interpreterConfirmation:
+            InterpreterConfirmationView()
         }
         
     }

@@ -29,35 +29,25 @@ struct AppointmentPhotoInstructionView: View {
                     // Logo at top
                     Image("logo")
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
+                        .aspectRatio(contentMode: .fill)
                         .frame(width: logoSize, height: logoSize)
-                        .padding(.top, screenHeight * 0.05)
-                    
-                    Spacer()
+                        .padding(.top, screenHeight * 0.03)
                     
                     // Instruction text
                     VStack(spacing: screenHeight * 0.02) {
                         Text(String.photoInstructionTitle)
-                            .font(.custom("Roboto-Regular", size: fontSize))
+                            .font(.custom("Roboto-SemiBold", size: fontSize))
                             .foregroundColor(Color("primary_blue"))
-                            .multilineTextAlignment(.center)
                             .lineLimit(nil)
-                            .padding(.horizontal, screenWidth * 0.1)
-                        
-                        Text("Make sure your face and your ID can both be seen as in the picture below.")
-                            .font(.custom("Roboto-Regular", size: fontSize))
-                            .foregroundColor(Color("primary_blue"))
-                            .multilineTextAlignment(.center)
-                            .lineLimit(nil)
-                            .padding(.horizontal, screenWidth * 0.1)
-                            .fontWeight(.semibold)
+                            .padding(.horizontal, screenWidth * 0.2)
+                            .fixedSize(horizontal: false, vertical: true)
                         
                         Text(String.photoInstructionSubtitle)
-                            .font(.custom("Roboto-Regular", size: fontSize))
+                            .font(.custom("Roboto-SemiBold", size: fontSize))
                             .foregroundColor(Color("primary_blue"))
-                            .multilineTextAlignment(.center)
                             .lineLimit(nil)
-                            .padding(.horizontal, screenWidth * 0.1)
+                            .padding(.horizontal, screenWidth * 0.2)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                     
                     // Example image placeholder
@@ -71,21 +61,16 @@ struct AppointmentPhotoInstructionView: View {
                             )
                         
                         // Example photo placeholder - we'll use a system image for now
-                        VStack(spacing: 20) {
-                            Image(systemName: "person.and.background.dotted")
-                                .font(.system(size: exampleImageSize * 0.15))
-                                .foregroundColor(Color("primary_blue").opacity(0.7))
-                            
-                            Text("Example: Person holding ID")
-                                .font(.custom("Roboto-Regular", size: fontSize * 0.8))
-                                .foregroundColor(.gray)
-                        }
+                        Image(.holdingID)
+                            .resizable()
+                            .frame(width: screenWidth * 0.5, height: screenHeight * 0.3)
                     }
                     
                     Spacer()
                     
                     // Take Photo button
                     Button(action: {
+                        IdleTimerManager.shared.userDidInteract() // Reset idle timer on button tap
                         coordinator.push(.appointmentCamera)
                     }) {
                         Text(String.takePhoto)
@@ -102,6 +87,7 @@ struct AppointmentPhotoInstructionView: View {
             }
         }
         .navigationBarHidden(true)
+        .idleTimer()
     }
 }
 

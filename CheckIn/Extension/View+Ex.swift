@@ -171,3 +171,50 @@ extension Data {
         }
     }
 }
+
+// MARK: - Idle Timer Extension
+extension View {
+    /// Applies idle timer functionality to automatically return to home screen after 3 minutes of inactivity
+    func idleTimer() -> some View {
+        self.modifier(IdleTimerModifier())
+    }
+}
+
+struct IdleTimerModifier: ViewModifier {
+    @StateObject private var idleTimerManager = IdleTimerManager.shared
+    
+    func body(content: Content) -> some View {
+        content
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                // Reset timer when app comes to foreground
+                idleTimerManager.resetIdleTimer()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+                // Stop timer when app goes to background
+                idleTimerManager.stopIdleTimer()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification)) { _ in
+                // Reset timer on text input
+                idleTimerManager.userDidInteract()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+                // Reset timer when keyboard appears
+                idleTimerManager.userDidInteract()
+            }
+            .onAppear {
+                // Start timer when view appears
+                idleTimerManager.resetIdleTimer()
+            }
+            .onDisappear {
+                // Don't stop timer on disappear as user is still in the app
+                // Timer will continue running across screens
+            }
+            // Detect any touch/gesture interactions without interfering with existing gestures
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { _ in
+                        idleTimerManager.userDidInteract()
+                    }
+            )
+    }
+}

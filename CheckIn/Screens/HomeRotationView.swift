@@ -74,6 +74,7 @@ struct HomeRotationView: View {
                     // Check-in button with sliding animation
                     Button(action: {
                         stopTimer()
+                        IdleTimerManager.shared.userDidInteract() // Reset idle timer on button tap
                         coordinator.push(.menu)
                     }) {
                         Text(slides[currentSlideIndex].buttonText)
@@ -97,6 +98,7 @@ struct HomeRotationView: View {
             }
         }
         .navigationBarHidden(true)
+        .idleTimer()
         .onAppear {
             startTimer()
         }
@@ -105,12 +107,13 @@ struct HomeRotationView: View {
         }
         .onTapGesture {
             stopTimer()
+            IdleTimerManager.shared.userDidInteract() // Reset idle timer on tap
             coordinator.push(.menu)
         }
     }
     
     private func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: true) { _ in
             withAnimation(.easeInOut(duration: 0.5)) {
                 currentSlideIndex = (currentSlideIndex + 1) % slides.count
             }

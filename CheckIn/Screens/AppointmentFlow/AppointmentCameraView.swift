@@ -71,6 +71,7 @@ struct AppointmentCameraView: View {
             }
         }
         .navigationBarHidden(true)
+        .idleTimer()
         .onAppear {
             camera.checkPermissions()
         }

@@ -216,6 +216,16 @@ extension String {
     
     // Evaluation Information
     static let evaluationDisclaimer = "I understand that today's evaluation is not a general health exam. Our specialists cannot discuss, give opinions, or recommend treatments based on today's results. The specialist you see today does not decide your disability status. That decision is made by the agency that referred you. For questions about this evaluation, please contact the analyst handling your case. Your analyst's contact information is located on the letter you received informing you of this appointment."
+    
+    // Interpreter Check-In Flow
+    static let interpreterFirstName = "Interpreter First Name"
+    static let interpreterLastName = "Interpreter Last Name"
+    static let interpretingAgency = "Interpreting Agency"
+    static let language = "Language"
+    static let signBelow = "Sign Below"
+    
+    // Interpreter Confirmation
+    static let interpreterThankYouMessage = "Thank you for checking in. Please find the person(s) you'll be interpreting for and assist them with their check-in on this tablet.\n\nThe evaluator will come to meet you at your appointment time. Please have a seat in the lobby while you wait."
 }
 
 

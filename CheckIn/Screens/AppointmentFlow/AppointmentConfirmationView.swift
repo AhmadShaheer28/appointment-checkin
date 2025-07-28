@@ -48,6 +48,7 @@ struct AppointmentConfirmationView: View {
                     
                     // Finish Check-In button
                     Button(action: {
+                        IdleTimerManager.shared.userDidInteract() // Reset idle timer on button tap
                         finishCheckIn()
                     }) {
                         Text(String.finishCheckIn)
@@ -64,6 +65,7 @@ struct AppointmentConfirmationView: View {
             }
         }
         .navigationBarHidden(true)
+        .idleTimer()
         .onAppear {
             startAutoReturnTimer()
         }

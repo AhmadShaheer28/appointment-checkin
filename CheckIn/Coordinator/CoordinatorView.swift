@@ -18,6 +18,10 @@ struct CoordinatorView: View {
                 }
         }
         .environmentObject(coordinator)
+        .onAppear {
+            // Set coordinator reference for idle timer
+            IdleTimerManager.shared.setCoordinator(coordinator)
+        }
     }
 }
 
