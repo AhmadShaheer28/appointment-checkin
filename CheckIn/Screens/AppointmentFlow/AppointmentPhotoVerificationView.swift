@@ -79,9 +79,10 @@ struct AppointmentPhotoVerificationView: View {
                     VStack(spacing: screenHeight * 0.03) {
                         // Accept Photo button
                         Button(action: {
-                            // Save photo and navigate to confirmation
+                            // Save photo, upload to Google Drive and navigate to confirmation
                             IdleTimerManager.shared.userDidInteract() // Reset idle timer on button tap
                             savePhotoAsPDF()
+                            appointmentData.uploadToGoogleDrive() // Upload to Google Drive in background
                             coordinator.push(.appointmentConfirmation)
                         }) {
                             Text(String.acceptPhoto)

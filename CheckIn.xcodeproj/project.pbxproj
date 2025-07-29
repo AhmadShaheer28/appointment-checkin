@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		1A2E447E2E382CBF00FD5E8E /* GoogleAPIClientForRESTCore in Frameworks */ = {isa = PBXBuildFile; productRef = 1A2E447D2E382CBF00FD5E8E /* GoogleAPIClientForRESTCore */; };
+		1A2E44802E382CBF00FD5E8E /* GoogleAPIClientForREST_Drive in Frameworks */ = {isa = PBXBuildFile; productRef = 1A2E447F2E382CBF00FD5E8E /* GoogleAPIClientForREST_Drive */; settings = {ATTRIBUTES = (Required, ); }; };
+		1A2E44832E382CE600FD5E8E /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 1A2E44822E382CE600FD5E8E /* GoogleSignIn */; };
+		1A2E44852E382CE600FD5E8E /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1A2E44842E382CE600FD5E8E /* GoogleSignInSwift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		1AC32E3B2E37479B0038A764 /* CheckIn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CheckIn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,16 +43,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A2E44802E382CBF00FD5E8E /* GoogleAPIClientForREST_Drive in Frameworks */,
+				1A2E447E2E382CBF00FD5E8E /* GoogleAPIClientForRESTCore in Frameworks */,
+				1A2E44832E382CE600FD5E8E /* GoogleSignIn in Frameworks */,
+				1A2E44852E382CE600FD5E8E /* GoogleSignInSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1A2E448A2E38337100FD5E8E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		1AC32E322E37479B0038A764 = {
 			isa = PBXGroup;
 			children = (
 				1AC32E3D2E37479B0038A764 /* CheckIn */,
+				1A2E448A2E38337100FD5E8E /* Frameworks */,
 				1AC32E3C2E37479B0038A764 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -78,6 +97,10 @@
 			);
 			name = CheckIn;
 			packageProductDependencies = (
+				1A2E447D2E382CBF00FD5E8E /* GoogleAPIClientForRESTCore */,
+				1A2E447F2E382CBF00FD5E8E /* GoogleAPIClientForREST_Drive */,
+				1A2E44822E382CE600FD5E8E /* GoogleSignIn */,
+				1A2E44842E382CE600FD5E8E /* GoogleSignInSwift */,
 			);
 			productName = CheckIn;
 			productReference = 1AC32E3B2E37479B0038A764 /* CheckIn.app */;
@@ -107,6 +130,10 @@
 			);
 			mainGroup = 1AC32E322E37479B0038A764;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				1A2E447C2E382CBF00FD5E8E /* XCRemoteSwiftPackageReference "google-api-objectivec-client-for-rest" */,
+				1A2E44812E382CE600FD5E8E /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1AC32E3C2E37479B0038A764 /* Products */;
 			projectDirPath = "";
@@ -351,6 +378,48 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1A2E447C2E382CBF00FD5E8E /* XCRemoteSwiftPackageReference "google-api-objectivec-client-for-rest" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/google-api-objectivec-client-for-rest.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		1A2E44812E382CE600FD5E8E /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1A2E447D2E382CBF00FD5E8E /* GoogleAPIClientForRESTCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A2E447C2E382CBF00FD5E8E /* XCRemoteSwiftPackageReference "google-api-objectivec-client-for-rest" */;
+			productName = GoogleAPIClientForRESTCore;
+		};
+		1A2E447F2E382CBF00FD5E8E /* GoogleAPIClientForREST_Drive */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A2E447C2E382CBF00FD5E8E /* XCRemoteSwiftPackageReference "google-api-objectivec-client-for-rest" */;
+			productName = GoogleAPIClientForREST_Drive;
+		};
+		1A2E44822E382CE600FD5E8E /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A2E44812E382CE600FD5E8E /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		1A2E44842E382CE600FD5E8E /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A2E44812E382CE600FD5E8E /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1AC32E332E37479B0038A764 /* Project object */;
 }

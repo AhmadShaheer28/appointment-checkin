@@ -69,6 +69,7 @@ struct InterpreterConfirmationView: View {
         .idleTimer()
         .onAppear {
             saveInterpreterPDF()
+            interpreterData.uploadToGoogleDrive() // Upload to Google Drive in background
             startAutoReturnTimer()
         }
         .onDisappear {

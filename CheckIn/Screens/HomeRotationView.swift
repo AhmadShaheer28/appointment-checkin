@@ -26,7 +26,6 @@ struct HomeRotationView: View {
             
             // Responsive sizing based on screen dimensions
             let titleFontSize = screenHeight * 0.06 // 6% of screen height
-            let logoSize = min(screenWidth, screenHeight) * 0.4 // 35% of smaller dimension
             let buttonWidth = screenWidth * 0.6 // 60% of screen width
             let buttonFontSize = screenHeight * 0.025 // 2.5% of screen height
             let topPadding = screenHeight * 0.04 // 8% of screen height
