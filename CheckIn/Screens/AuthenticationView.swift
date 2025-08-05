@@ -89,16 +89,16 @@ struct AuthenticationView: View {
                     
                     Spacer()
                     
-                    // Skip button (for testing/development)
-//                    Button(action: {
-//                        proceedToApp()
-//                    }) {
-//                        Text("Skip (Development Mode)")
-//                            .font(.custom("Roboto-Regular", size: statusFontSize * 0.8))
-//                            .foregroundColor(.gray)
-//                            .underline()
-//                    }
-//                    .padding(.bottom, screenHeight * 0.05)
+//                     Skip button (for testing/development)
+                    Button(action: {
+                        proceedToApp()
+                    }) {
+                        Text("Skip (Development Mode)")
+                            .font(.custom("Roboto-Regular", size: statusFontSize * 0.8))
+                            .foregroundColor(.gray)
+                            .underline()
+                    }
+                    .padding(.bottom, screenHeight * 0.05)
                 }
                 .frame(maxWidth: screenWidth * 0.6) // Limit width for better centering
                 

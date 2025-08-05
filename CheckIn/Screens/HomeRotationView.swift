@@ -97,17 +97,18 @@ struct HomeRotationView: View {
             }
         }
         .navigationBarHidden(true)
+        .contentShape(.rect)
+        .onTapGesture {
+            stopTimer()
+            IdleTimerManager.shared.userDidInteract() // Reset idle timer on tap
+            coordinator.push(.menu)
+        }
         .idleTimer()
         .onAppear {
             startTimer()
         }
         .onDisappear {
             stopTimer()
-        }
-        .onTapGesture {
-            stopTimer()
-            IdleTimerManager.shared.userDidInteract() // Reset idle timer on tap
-            coordinator.push(.menu)
         }
     }
     

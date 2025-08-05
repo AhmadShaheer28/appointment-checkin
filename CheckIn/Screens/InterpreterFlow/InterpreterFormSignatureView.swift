@@ -59,17 +59,16 @@ struct InterpreterFormSignatureView: View {
                                     
                                     TextField("", text: $interpreterData.childFirstName)
                                         .focused($focusedField, equals: .childFirstName)
-                                        .textFieldStyle(PlainTextFieldStyle())
                                         .font(.custom("Roboto-Regular", size: fontSize))
                                         .foregroundColor(.black)
                                         .padding()
                                         .frame(width: textFieldWidth, height: textFieldHeight)
                                         .background(Color.white)
                                         .cornerRadius(8)
-                                        .overlay(
+                                        .background {
                                             RoundedRectangle(cornerRadius: 8)
                                                 .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                                        )
+                                        }
                                 }
                                 
                                 VStack(alignment: .leading, spacing: 8) {
@@ -79,17 +78,16 @@ struct InterpreterFormSignatureView: View {
                                     
                                     TextField("", text: $interpreterData.childLastName)
                                         .focused($focusedField, equals: .childLastName)
-                                        .textFieldStyle(PlainTextFieldStyle())
                                         .font(.custom("Roboto-Regular", size: fontSize))
                                         .foregroundColor(.black)
                                         .padding()
                                         .frame(width: textFieldWidth, height: textFieldHeight)
                                         .background(Color.white)
                                         .cornerRadius(8)
-                                        .overlay(
+                                        .background {
                                             RoundedRectangle(cornerRadius: 8)
                                                 .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                                        )
+                                        }
                                 }
                             }
                             
@@ -102,17 +100,16 @@ struct InterpreterFormSignatureView: View {
                                     
                                     TextField("", text: $interpreterData.interpreterFirstName)
                                         .focused($focusedField, equals: .interpreterFirstName)
-                                        .textFieldStyle(PlainTextFieldStyle())
                                         .font(.custom("Roboto-Regular", size: fontSize))
                                         .foregroundColor(.black)
                                         .padding()
                                         .frame(width: textFieldWidth, height: textFieldHeight)
                                         .background(Color.white)
                                         .cornerRadius(8)
-                                        .overlay(
+                                        .background {
                                             RoundedRectangle(cornerRadius: 8)
                                                 .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                                        )
+                                        }
                                 }
                                 
                                 VStack(alignment: .leading, spacing: 8) {
@@ -122,17 +119,16 @@ struct InterpreterFormSignatureView: View {
                                     
                                     TextField("", text: $interpreterData.interpreterLastName)
                                         .focused($focusedField, equals: .interpreterLastName)
-                                        .textFieldStyle(PlainTextFieldStyle())
                                         .font(.custom("Roboto-Regular", size: fontSize))
                                         .foregroundColor(.black)
                                         .padding()
                                         .frame(width: textFieldWidth, height: textFieldHeight)
                                         .background(Color.white)
                                         .cornerRadius(8)
-                                        .overlay(
+                                        .background {
                                             RoundedRectangle(cornerRadius: 8)
                                                 .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                                        )
+                                        }
                                 }
                             }
                             
@@ -145,17 +141,16 @@ struct InterpreterFormSignatureView: View {
                                     
                                     TextField("", text: $interpreterData.interpretingAgency)
                                         .focused($focusedField, equals: .interpretingAgency)
-                                        .textFieldStyle(PlainTextFieldStyle())
                                         .font(.custom("Roboto-Regular", size: fontSize))
                                         .foregroundColor(.black)
                                         .padding()
                                         .frame(width: textFieldWidth, height: textFieldHeight)
                                         .background(Color.white)
                                         .cornerRadius(8)
-                                        .overlay(
+                                        .background {
                                             RoundedRectangle(cornerRadius: 8)
                                                 .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                                        )
+                                        }
                                 }
                                 
                                 VStack(alignment: .leading, spacing: 8) {
@@ -165,17 +160,16 @@ struct InterpreterFormSignatureView: View {
                                     
                                     TextField("", text: $interpreterData.language)
                                         .focused($focusedField, equals: .language)
-                                        .textFieldStyle(PlainTextFieldStyle())
                                         .font(.custom("Roboto-Regular", size: fontSize))
                                         .foregroundColor(.black)
                                         .padding()
                                         .frame(width: textFieldWidth, height: textFieldHeight)
                                         .background(Color.white)
                                         .cornerRadius(8)
-                                        .overlay(
+                                        .background {
                                             RoundedRectangle(cornerRadius: 8)
                                                 .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                                        )
+                                        }
                                 }
                             }
                         }
@@ -192,10 +186,10 @@ struct InterpreterFormSignatureView: View {
                             Rectangle()
                                 .fill(Color.white)
                                 .frame(width: signatureBoxWidth, height: signatureBoxHeight)
-                                .overlay(
+                                .background {
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(Color.gray.opacity(0.5), lineWidth: 2)
-                                )
+                                        .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                                }
                             
                             // Signature canvas
                             Canvas { context, size in

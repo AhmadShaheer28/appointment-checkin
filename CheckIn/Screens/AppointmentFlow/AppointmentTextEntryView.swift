@@ -32,8 +32,6 @@ struct AppointmentTextEntryView: View {
             // Responsive sizing
             let textFieldWidth = screenWidth * 0.35
             let textFieldHeight = screenHeight * 0.08
-            let fontSize = screenHeight * 0.025
-            let buttonFontSize = screenHeight * 0.03
             let spacing = screenHeight * 0.04
             
             ZStack {
@@ -55,13 +53,12 @@ struct AppointmentTextEntryView: View {
                         HStack(spacing: screenWidth * 0.1) {
                             VStack(alignment: .leading, spacing: 12) {
                                 Text(String.caregiverFirstName)
-                                    .font(.custom("Roboto-Medium", size: fontSize))
+                                    .font(.buttonTextiPad)
                                     .foregroundColor(Color("primary_blue"))
                                 
                                 TextField("", text: $appointmentData.caregiverFirstName)
                                     .focused($focusedField, equals: .caregiverFirstName)
-                                    .textFieldStyle(PlainTextFieldStyle())
-                                    .font(.custom("Roboto-Regular", size: fontSize))
+                                    .font(.buttonTextiPad)
                                     .foregroundColor(.black)
                                     .padding()
                                     .frame(width: textFieldWidth, height: textFieldHeight)
@@ -75,13 +72,12 @@ struct AppointmentTextEntryView: View {
                             
                             VStack(alignment: .leading, spacing: 12) {
                                 Text(String.caregiverLastName)
-                                    .font(.custom("Roboto-Medium", size: fontSize))
+                                    .font(.buttonTextiPad)
                                     .foregroundColor(Color("primary_blue"))
                                 
                                 TextField("", text: $appointmentData.caregiverLastName)
                                     .focused($focusedField, equals: .caregiverLastName)
-                                    .textFieldStyle(PlainTextFieldStyle())
-                                    .font(.custom("Roboto-Regular", size: fontSize))
+                                    .font(.buttonTextiPad)
                                     .foregroundColor(.black)
                                     .padding()
                                     .frame(width: textFieldWidth, height: textFieldHeight)
@@ -98,13 +94,12 @@ struct AppointmentTextEntryView: View {
                         HStack(spacing: screenWidth * 0.1) {
                             VStack(alignment: .leading, spacing: 12) {
                                 Text(String.childFirstName)
-                                    .font(.custom("Roboto-Medium", size: fontSize))
+                                    .font(.buttonTextiPad)
                                     .foregroundColor(Color("primary_blue"))
                                 
                                 TextField("", text: $appointmentData.childFirstName)
                                     .focused($focusedField, equals: .childFirstName)
-                                    .textFieldStyle(PlainTextFieldStyle())
-                                    .font(.custom("Roboto-Regular", size: fontSize))
+                                    .font(.buttonTextiPad)
                                     .foregroundColor(.black)
                                     .padding()
                                     .frame(width: textFieldWidth, height: textFieldHeight)
@@ -118,13 +113,12 @@ struct AppointmentTextEntryView: View {
                             
                             VStack(alignment: .leading, spacing: 12) {
                                 Text(String.childLastName)
-                                    .font(.custom("Roboto-Medium", size: fontSize))
+                                    .font(.buttonTextiPad)
                                     .foregroundColor(Color("primary_blue"))
                                 
                                 TextField("", text: $appointmentData.childLastName)
                                     .focused($focusedField, equals: .childLastName)
-                                    .textFieldStyle(PlainTextFieldStyle())
-                                    .font(.custom("Roboto-Regular", size: fontSize))
+                                    .font(.buttonTextiPad)
                                     .foregroundColor(.black)
                                     .padding()
                                     .frame(width: textFieldWidth, height: textFieldHeight)
@@ -146,7 +140,7 @@ struct AppointmentTextEntryView: View {
                         coordinator.push(.appointmentSignature)
                     }) {
                         Text(String.continueButton)
-                            .font(.custom("Roboto-Medium", size: buttonFontSize))
+                            .font(.buttonLargeiPad)
                             .foregroundColor(.white)
                             .padding(.horizontal, screenWidth * 0.1)
                             .padding(.vertical, screenHeight * 0.02)
@@ -161,9 +155,13 @@ struct AppointmentTextEntryView: View {
         }
         .navigationBarHidden(true)
         .idleTimer()
+//        .onTapGesture {
+//            // Dismiss keyboard when tapping outside
+//            focusedField = nil
+//        }
         .onAppear {
             // Auto-focus first field when view appears
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 focusedField = .caregiverFirstName
             }
         }
