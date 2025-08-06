@@ -56,7 +56,7 @@ struct AppointmentPhotoVerificationView: View {
                         if let capturedImage = appointmentData.capturedPhoto {
                             Image(uiImage: capturedImage)
                                 .resizable()
-                                .aspectRatio(contentMode: .fill)
+                                .aspectRatio(contentMode: .fit)
                                 .frame(width: photoSize, height: photoSize * 0.7)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                         } else {

@@ -69,6 +69,10 @@ struct InterpreterFormSignatureView: View {
                                             RoundedRectangle(cornerRadius: 8)
                                                 .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                                         }
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            focusedField = .childFirstName
+                                        }
                                 }
                                 
                                 VStack(alignment: .leading, spacing: 8) {
@@ -87,6 +91,10 @@ struct InterpreterFormSignatureView: View {
                                         .background {
                                             RoundedRectangle(cornerRadius: 8)
                                                 .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                                        }
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            focusedField = .childLastName
                                         }
                                 }
                             }
@@ -110,6 +118,10 @@ struct InterpreterFormSignatureView: View {
                                             RoundedRectangle(cornerRadius: 8)
                                                 .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                                         }
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            focusedField = .interpreterFirstName
+                                        }
                                 }
                                 
                                 VStack(alignment: .leading, spacing: 8) {
@@ -128,6 +140,10 @@ struct InterpreterFormSignatureView: View {
                                         .background {
                                             RoundedRectangle(cornerRadius: 8)
                                                 .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                                        }
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            focusedField = .interpreterLastName
                                         }
                                 }
                             }
@@ -151,6 +167,10 @@ struct InterpreterFormSignatureView: View {
                                             RoundedRectangle(cornerRadius: 8)
                                                 .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                                         }
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            focusedField = .interpretingAgency
+                                        }
                                 }
                                 
                                 VStack(alignment: .leading, spacing: 8) {
@@ -170,6 +190,11 @@ struct InterpreterFormSignatureView: View {
                                             RoundedRectangle(cornerRadius: 8)
                                                 .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                                         }
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            focusedField = .language
+                                        }
+                                    
                                 }
                             }
                         }

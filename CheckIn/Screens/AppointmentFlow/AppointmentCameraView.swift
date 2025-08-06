@@ -73,6 +73,8 @@ struct AppointmentCameraView: View {
         .navigationBarHidden(true)
         .idleTimer()
         .onAppear {
+            countdown = 5
+            showCountdown = false
             camera.checkPermissions()
         }
         .onChange(of: appointmentData.capturedPhoto) { image in

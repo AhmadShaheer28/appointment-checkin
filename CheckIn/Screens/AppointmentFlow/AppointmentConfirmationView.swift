@@ -51,15 +51,19 @@ struct AppointmentConfirmationView: View {
                         IdleTimerManager.shared.userDidInteract() // Reset idle timer on button tap
                         finishCheckIn()
                     }) {
-                        Text(String.finishCheckIn)
-                            .font(.custom("Roboto-Medium", size: buttonFontSize))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, screenWidth * 0.1)
-                            .padding(.vertical, screenHeight * 0.02)
-                            .frame(maxWidth: screenWidth * 0.6)
-                            .background(Color("primary_blue"))
-                            .cornerRadius(12)
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color("primary_blue"))
+                                .frame(height: screenHeight * 0.08)
+                            
+                            Text(String.finishCheckIn)
+                                .font(.custom("Roboto-Medium", size: buttonFontSize))
+                                .foregroundColor(.white)
+                        }
+                        .contentShape(.rect)
+                        .padding(.horizontal, screenWidth * 0.2)
                     }
+                    .disabled(false)
                     .padding(.bottom, screenHeight * 0.08)
                 }
             }

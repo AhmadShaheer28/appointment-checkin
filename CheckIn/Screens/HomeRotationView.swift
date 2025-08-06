@@ -13,10 +13,10 @@ struct HomeRotationView: View {
     @State private var timer: Timer?
     
     private let slides: [SlideData] = [
+        SlideData(title: .evaluationAppointment, buttonText: .checkInHere),
+        SlideData(title: .interpreter, buttonText: "  "),
         SlideData(title: .interpreter, buttonText: .checkInHere),
-        SlideData(title: .evaluationAppointment, buttonText: .checkInHere),
-        SlideData(title: .evaluationAppointment, buttonText: .checkInHere),
-        SlideData(title: .interpreter, buttonText: .checkInHere)
+        SlideData(title: .evaluationAppointment, buttonText: "  "),
     ]
     
     var body: some View {
@@ -46,11 +46,11 @@ struct HomeRotationView: View {
                             .lineLimit(nil)
                             .fixedSize(horizontal: false, vertical: true)
                             .padding(.horizontal, screenWidth * 0.05)
-                            .id(currentSlideIndex) // Key for transition
-                            .transition(.asymmetric(
-                                insertion: .move(edge: .trailing).combined(with: .opacity),
-                                removal: .move(edge: .leading).combined(with: .opacity)
-                            ))
+//                            .id(currentSlideIndex) // Key for transition
+//                            .transition(.asymmetric(
+//                                insertion: .move(edge: .trailing).combined(with: .opacity),
+//                                removal: .move(edge: .leading).combined(with: .opacity)
+//                            ))
                     }
                     .frame(height: titleHeight)
                     .padding(.top, topPadding)
@@ -62,11 +62,11 @@ struct HomeRotationView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: screenWidth * 0.6, height: screenHeight * 0.5)
-                        .id("button-\(currentSlideIndex)")
-                        .transition(.asymmetric(
-                            insertion: .move(edge: .trailing).combined(with: .opacity),
-                            removal: .move(edge: .leading).combined(with: .opacity)
-                        ))
+//                        .id("button-\(currentSlideIndex)")
+//                        .transition(.asymmetric(
+//                            insertion: .move(edge: .trailing).combined(with: .opacity),
+//                            removal: .move(edge: .leading).combined(with: .opacity)
+//                        ))
                     
                     Spacer()
                     
@@ -84,12 +84,14 @@ struct HomeRotationView: View {
                             .frame(maxWidth: buttonWidth)
                             .background(Color("primary_blue"))
                             .cornerRadius(screenWidth * 0.02)
+                            
                     }
-                    .id("button-\(currentSlideIndex)") // Key for transition
-                    .transition(.asymmetric(
-                        insertion: .move(edge: .trailing).combined(with: .opacity),
-                        removal: .move(edge: .leading).combined(with: .opacity)
-                    ))
+                    .frame(height: screenHeight * 0.04)
+//                    .id("button-\(currentSlideIndex)") // Key for transition
+//                    .transition(.asymmetric(
+//                        insertion: .move(edge: .trailing).combined(with: .opacity),
+//                        removal: .move(edge: .leading).combined(with: .opacity)
+//                    ))
                     .disabled(true)
                     .padding(.bottom, screenHeight * 0.08)
                 }

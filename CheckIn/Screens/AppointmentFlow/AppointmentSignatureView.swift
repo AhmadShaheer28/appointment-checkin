@@ -23,7 +23,7 @@ struct AppointmentSignatureView: View {
             // Responsive sizing
             let logoSize = min(screenWidth, screenHeight) * 0.15
             let signatureBoxWidth = screenWidth * 0.8
-            let signatureBoxHeight = screenHeight * 0.35
+            let signatureBoxHeight = screenHeight * 0.15
             let fontSize = screenHeight * 0.03
             let buttonFontSize = screenHeight * 0.03
             
@@ -38,8 +38,15 @@ struct AppointmentSignatureView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: logoSize, height: logoSize)
                         .padding(.top, screenHeight * 0.05)
+                        .padding(.bottom)
                     
-                    Spacer()
+                    Text(String.evaluationDisclaimer)
+                        .font(.custom("Roboto-Medium", size: screenHeight * 0.023))
+                        .foregroundColor(Color("primary_blue"))
+                        .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(.leading)
+                        .padding(.horizontal, screenWidth * 0.1)
+                        .padding(.bottom)
                     
                     // Please Sign Below text
                     Text(String.pleaseSignBelow)
@@ -100,7 +107,6 @@ struct AppointmentSignatureView: View {
                     }
                     .cornerRadius(8)
                     
-                    Spacer()
                     
                     // Continue button (disabled until signed)
                     Button(action: {

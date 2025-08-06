@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct AuthenticationView: View {
     @EnvironmentObject var coordinator: Coordinator
@@ -108,7 +109,18 @@ struct AuthenticationView: View {
         }
         .navigationBarHidden(true)
         .onAppear {
+            requestCameraAccess()
             authenticateGoogleDrive()
+        }
+    }
+    
+    private func requestCameraAccess() {
+        AVCaptureDevice.requestAccess(for: .video) { granted in
+            if granted {
+                print("✅ Camera access granted")
+            } else {
+                print("❌ Camera access denied")
+            }
         }
     }
     

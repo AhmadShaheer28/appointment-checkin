@@ -44,14 +44,7 @@ class Coordinator: ObservableObject {
     }
     
     func popToRoot() {
-        for page in path {
-            if page == .homeRotation {
-                return
-            }
-            
-            path.removeAll { $0 == page }
-        }
-        path.removeAll()
+        path.removeAll { $0 != .homeRotation }
     }
     
     
