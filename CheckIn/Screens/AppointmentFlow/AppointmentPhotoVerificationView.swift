@@ -19,7 +19,7 @@ struct AppointmentPhotoVerificationView: View {
             
             // Responsive sizing
             let logoSize = min(screenWidth, screenHeight) * 0.15
-            let photoSize = min(screenWidth, screenHeight) * 0.5
+            let photoSize = screenWidth * 0.5
             let fontSize = screenHeight * 0.025
             let buttonFontSize = screenHeight * 0.03
             
@@ -47,7 +47,7 @@ struct AppointmentPhotoVerificationView: View {
                     ZStack {
                         RoundedRectangle(cornerRadius: 12)
                             .fill(Color.white)
-                            .frame(width: photoSize, height: photoSize * 0.7)
+                            .frame(width: screenWidth * 0.5, height: screenWidth * 0.7)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12)
                                     .stroke(Color.gray.opacity(0.3), lineWidth: 1)
@@ -56,8 +56,8 @@ struct AppointmentPhotoVerificationView: View {
                         if let capturedImage = appointmentData.capturedPhoto {
                             Image(uiImage: capturedImage)
                                 .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: photoSize, height: photoSize * 0.7)
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: screenWidth * 0.5, height: screenWidth * 0.7)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                         } else {
                             // Placeholder if no image
@@ -216,11 +216,11 @@ struct AppointmentPhotoVerificationView: View {
     
     private func createPlaceholderImage() {
         // Create a simple placeholder image for demo
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 400, height: 300))
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 300, height: 400))
         let image = renderer.image { context in
             // Draw background
             UIColor.lightGray.setFill()
-            context.fill(CGRect(x: 0, y: 0, width: 400, height: 300))
+            context.fill(CGRect(x: 0, y: 0, width: 300, height: 400))
             
             // Draw placeholder text
             let attributes: [NSAttributedString.Key: Any] = [

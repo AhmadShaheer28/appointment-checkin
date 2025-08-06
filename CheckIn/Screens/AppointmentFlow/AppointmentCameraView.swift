@@ -73,9 +73,8 @@ struct AppointmentCameraView: View {
         .navigationBarHidden(true)
         .idleTimer()
         .onAppear {
-            countdown = 5
-            showCountdown = false
             camera.checkPermissions()
+            camera.setupCameraIfNeeded()
         }
         .onChange(of: appointmentData.capturedPhoto) { image in
             if image != nil {
@@ -110,6 +109,7 @@ class CameraModel: NSObject, ObservableObject {
     @Published var preview: AVCaptureVideoPreviewLayer!
     @Published var output = AVCapturePhotoOutput()
     @Published var isCameraSetup = false
+    @Published var isSessionRunning = false
     
     private var captureCompletion: ((UIImage?) -> Void)?
     
@@ -132,7 +132,17 @@ class CameraModel: NSObject, ObservableObject {
         }
     }
     
+    func setupCameraIfNeeded() {
+        if !isCameraSetup {
+            setupCamera()
+        } else {
+            resumeSession()
+        }
+    }
+    
     func setupCamera() {
+        guard !isCameraSetup else { return }
+        
         do {
             session.beginConfiguration()
             
@@ -161,10 +171,35 @@ class CameraModel: NSObject, ObservableObject {
             
             DispatchQueue.global(qos: .background).async {
                 self.session.startRunning()
+                DispatchQueue.main.async {
+                    self.isSessionRunning = true
+                }
             }
             
         } catch {
             print("Camera setup error: \(error)")
+        }
+    }
+    
+    func resumeSession() {
+        guard isCameraSetup && !isSessionRunning else { return }
+        
+        DispatchQueue.global(qos: .background).async {
+            self.session.startRunning()
+            DispatchQueue.main.async {
+                self.isSessionRunning = true
+            }
+        }
+    }
+    
+    func pauseSession() {
+        guard isSessionRunning else { return }
+        
+        DispatchQueue.global(qos: .background).async {
+            self.session.stopRunning()
+            DispatchQueue.main.async {
+                self.isSessionRunning = false
+            }
         }
     }
     
