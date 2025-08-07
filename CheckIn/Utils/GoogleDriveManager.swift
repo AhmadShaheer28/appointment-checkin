@@ -18,6 +18,11 @@ class GoogleDriveManager: ObservableObject, @unchecked Sendable {
     
     // Google Drive folder cache
     private var dailyFolderCache: [String: String] = [:] // Date string -> Folder ID
+    private var mainFolderCache: String? // Main "Check-In" folder ID
+    
+    // Authentication cache keys
+    private let authenticationStatusKey = "GoogleDriveAuthenticationStatus"
+    private let lastAuthenticationDateKey = "GoogleDriveLastAuthenticationDate"
     
     private init() {
         setupGoogleDrive()
@@ -45,25 +50,79 @@ class GoogleDriveManager: ObservableObject, @unchecked Sendable {
                 let grantedScopes = currentUser.grantedScopes ?? []
                 
                 if grantedScopes.contains(driveScope) {
-                    self.service.authorizer = currentUser.fetcherAuthorizer
-                    self.isAuthenticated = true
-                    print("✅ Google Drive already authenticated with proper scopes")
+                    // Verify the token is still valid
+                    self.verifyAndSetupAuthentication(for: currentUser)
                 } else {
                     print("⚠️ User signed in but missing Google Drive scopes. Will request on next authentication.")
                     self.isAuthenticated = false
+                    UserDefaults.standard.set(false, forKey: self.authenticationStatusKey)
                 }
             } else {
                 print("🔐 Google Drive authentication required on first use")
+                self.isAuthenticated = false
+                UserDefaults.standard.set(false, forKey: self.authenticationStatusKey)
             }
         }
+    }
+    
+    // MARK: - Authentication Helper
+    private func verifyAndSetupAuthentication(for user: GIDGoogleUser) {
+        // Check if the access token needs refreshing
+        let accessToken = user.accessToken
+        if let expirationDate = accessToken.expirationDate,
+           expirationDate.timeIntervalSinceNow > 300 { // At least 5 minutes remaining
+            // Token is still valid, use it
+            self.service.authorizer = user.fetcherAuthorizer
+            self.isAuthenticated = true
+            self.saveAuthenticationStatus(true)
+            print("✅ Google Drive already authenticated with valid token (expires: \(expirationDate.description))")
+        } else {
+            // Token is expired or expiring soon, refresh it
+            print("🔄 Access token expired or expiring, refreshing...")
+            user.refreshTokensIfNeeded { [weak self] user, error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        print("❌ Token refresh failed: \(error.localizedDescription)")
+                        self?.isAuthenticated = false
+                        self?.saveAuthenticationStatus(false)
+                    } else if let refreshedUser = user {
+                        self?.service.authorizer = refreshedUser.fetcherAuthorizer
+                        self?.isAuthenticated = true
+                        self?.saveAuthenticationStatus(true)
+                        print("✅ Google Drive token refreshed successfully")
+                    } else {
+                        print("❌ Token refresh returned no user")
+                        self?.isAuthenticated = false
+                        self?.saveAuthenticationStatus(false)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func saveAuthenticationStatus(_ isAuthenticated: Bool) {
+        UserDefaults.standard.set(isAuthenticated, forKey: authenticationStatusKey)
+        if isAuthenticated {
+            UserDefaults.standard.set(Date(), forKey: lastAuthenticationDateKey)
+        }
+        print("💾 Saved authentication status: \(isAuthenticated)")
     }
     
     // MARK: - Authentication
     
     /// Check if user is already authenticated with Google Drive scopes
     func isAlreadyAuthenticated() -> Bool {
-        guard isAuthenticated,
-              let currentUser = GIDSignIn.sharedInstance.currentUser else {
+        // First check our internal authentication status
+        guard isAuthenticated else {
+            print("🔍 Internal authentication status: false")
+            return false
+        }
+        
+        // Check if we have a current user with valid token
+        guard let currentUser = GIDSignIn.sharedInstance.currentUser else {
+            print("🔍 No current Google user found")
+            isAuthenticated = false
+            saveAuthenticationStatus(false)
             return false
         }
         
@@ -72,18 +131,32 @@ class GoogleDriveManager: ObservableObject, @unchecked Sendable {
         let hasRequiredScope = grantedScopes.contains("https://www.googleapis.com/auth/drive.file")
         
         if !hasRequiredScope {
-            // If user is signed in but doesn't have the required scope, reset authentication
             print("⚠️ User lacks Google Drive scope. Resetting authentication.")
             isAuthenticated = false
+            saveAuthenticationStatus(false)
+            return false
         }
         
-        return hasRequiredScope
+        // Check if token is still valid (at least 5 minutes remaining)
+        let accessToken = currentUser.accessToken
+        if let expirationDate = accessToken.expirationDate,
+           expirationDate.timeIntervalSinceNow > 300 {
+            print("✅ Authentication valid (expires: \(expirationDate))")
+            return true
+        } else {
+            print("⚠️ Access token expired or expiring soon")
+            // Don't immediately set as unauthenticated - the refresh will handle this
+            return false
+        }
     }
     
     /// Clear existing authentication to force re-authentication with proper scopes
     func clearAuthentication() {
         isAuthenticated = false
         service.authorizer = nil
+        dailyFolderCache.removeAll()
+        mainFolderCache = nil
+        saveAuthenticationStatus(false)
         GIDSignIn.sharedInstance.signOut()
         print("🔄 Cleared existing authentication. User will need to re-authenticate with Google Drive scopes.")
     }
@@ -132,11 +205,13 @@ class GoogleDriveManager: ObservableObject, @unchecked Sendable {
                     if hasRequiredScope {
                         self?.service.authorizer = user.fetcherAuthorizer
                         self?.isAuthenticated = true
+                        self?.saveAuthenticationStatus(true)
                         print("✅ Google Drive authenticated successfully with required scopes for user: \(user.profile?.email ?? "Unknown")")
                         print("🔑 Granted scopes: \(grantedScopes)")
                         continuation.resume()
                     } else {
                         print("❌ Google Drive scope not granted. Granted scopes: \(grantedScopes)")
+                        self?.saveAuthenticationStatus(false)
                         continuation.resume(throwing: GoogleDriveError.authenticationFailed)
                     }
                 }
@@ -145,6 +220,29 @@ class GoogleDriveManager: ObservableObject, @unchecked Sendable {
     }
     
     // MARK: - Folder Management
+    func getMainFolderId() async throws -> String {
+        let mainFolderName = "Check-In"
+        
+        // Check cache first
+        if let cachedMainFolderId = mainFolderCache {
+            print("📁 Using cached main folder ID for \(mainFolderName): \(cachedMainFolderId)")
+            return cachedMainFolderId
+        }
+        
+        // Search for existing main folder
+        if let existingMainFolderId = try await findFolder(named: mainFolderName) {
+            mainFolderCache = existingMainFolderId
+            print("📁 Found existing main folder \(mainFolderName): \(existingMainFolderId)")
+            return existingMainFolderId
+        }
+        
+        // Create new main folder
+        let newMainFolderId = try await createFolder(named: mainFolderName)
+        mainFolderCache = newMainFolderId
+        print("📁 Created new main folder \(mainFolderName): \(newMainFolderId)")
+        return newMainFolderId
+    }
+    
     func getDailyFolderId(for date: Date = Date()) async throws -> String {
         let dateString = formatDateForFolder(date)
         let folderName = "Check-In \(dateString)"
@@ -155,23 +253,32 @@ class GoogleDriveManager: ObservableObject, @unchecked Sendable {
             return cachedFolderId
         }
         
-        // Search for existing folder
-        if let existingFolderId = try await findFolder(named: folderName) {
+        // Get or create main "Check-In" folder first
+        let mainFolderId = try await getMainFolderId()
+        
+        // Search for existing date folder inside main folder
+        if let existingFolderId = try await findFolder(named: folderName, parentId: mainFolderId) {
             dailyFolderCache[dateString] = existingFolderId
-            print("📁 Found existing folder \(folderName): \(existingFolderId)")
+            print("📁 Found existing folder \(folderName) in main folder: \(existingFolderId)")
             return existingFolderId
         }
         
-        // Create new folder
-        let newFolderId = try await createFolder(named: folderName)
+        // Create new date folder inside main folder
+        let newFolderId = try await createFolder(named: folderName, parentId: mainFolderId)
         dailyFolderCache[dateString] = newFolderId
-        print("📁 Created new folder \(folderName): \(newFolderId)")
+        print("📁 Created new folder \(folderName) in main folder: \(newFolderId)")
         return newFolderId
     }
     
-    private func findFolder(named folderName: String) async throws -> String? {
+    private func findFolder(named folderName: String, parentId: String? = nil) async throws -> String? {
         let query = GTLRDriveQuery_FilesList.query()
-        query.q = "name = '\(folderName)' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
+        
+        var queryString = "name = '\(folderName)' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
+        if let parentId = parentId {
+            queryString += " and '\(parentId)' in parents"
+        }
+        
+        query.q = queryString
         query.spaces = "drive"
         
         return try await withCheckedThrowingContinuation { continuation in
@@ -197,10 +304,14 @@ class GoogleDriveManager: ObservableObject, @unchecked Sendable {
         }
     }
     
-    private func createFolder(named folderName: String) async throws -> String {
+    private func createFolder(named folderName: String, parentId: String? = nil) async throws -> String {
         let folder = GTLRDrive_File()
         folder.name = folderName
         folder.mimeType = "application/vnd.google-apps.folder"
+        
+        if let parentId = parentId {
+            folder.parents = [parentId]
+        }
         
         let query = GTLRDriveQuery_FilesCreate.query(withObject: folder, uploadParameters: nil)
         
@@ -253,10 +364,15 @@ class GoogleDriveManager: ObservableObject, @unchecked Sendable {
     }
     
     private func uploadPDF(data: Data, fileName: String, date: Date) async throws {
-        // Ensure authentication
-        if !isAuthenticated {
+        // Ensure authentication with automatic retry
+        if !isAlreadyAuthenticated() {
             print("🔐 Authentication required, signing in...")
             try await authenticate()
+        }
+        
+        // Double-check after authentication attempt
+        guard isAuthenticated else {
+            throw GoogleDriveError.authenticationFailed
         }
         
         // Get or create daily folder
@@ -401,10 +517,26 @@ class GoogleDriveManager: ObservableObject, @unchecked Sendable {
         return profile.email
     }
     
+    func getAuthenticationInfo() -> (isAuthenticated: Bool, email: String?, lastAuthDate: Date?) {
+        let cachedAuthStatus = UserDefaults.standard.bool(forKey: authenticationStatusKey)
+        let lastAuthDate = UserDefaults.standard.object(forKey: lastAuthenticationDateKey) as? Date
+        let email = getAccountInfo()
+        
+        print("📊 Authentication Info:")
+        print("   - Cached Status: \(cachedAuthStatus)")
+        print("   - Internal Status: \(isAuthenticated)")
+        print("   - Email: \(email ?? "none")")
+        print("   - Last Auth: \(lastAuthDate?.description ?? "never")")
+        
+        return (isAuthenticated, email, lastAuthDate)
+    }
+    
     func signOut() {
         GIDSignIn.sharedInstance.signOut()
         isAuthenticated = false
         dailyFolderCache.removeAll()
+        mainFolderCache = nil
+        saveAuthenticationStatus(false)
         print("🔐 Signed out of Google Drive")
     }
     

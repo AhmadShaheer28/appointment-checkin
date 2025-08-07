@@ -55,6 +55,7 @@ struct AppointmentCameraView: View {
                         
                         // Start countdown button
                         Button(action: {
+                            IdleTimerManager.shared.userDidInteract()
                             startCountdown()
                         }) {
                             Text("Start Photo Countdown")
@@ -73,8 +74,16 @@ struct AppointmentCameraView: View {
         .navigationBarHidden(true)
         .idleTimer()
         .onAppear {
+            countdown = 5
+            showCountdown = false
+            // Clear any previous photo when entering camera
+            appointmentData.capturedPhoto = nil
             camera.checkPermissions()
             camera.setupCameraIfNeeded()
+        }
+        .onDisappear {
+            // Don't stop camera when navigating away - just pause
+            camera.pauseSession()
         }
         .onChange(of: appointmentData.capturedPhoto) { image in
             if image != nil {
@@ -148,6 +157,8 @@ class CameraModel: NSObject, ObservableObject {
             
             // Use front camera
             guard let frontCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
+                session.commitConfiguration() // Important: commit before returning
+                print("Front camera not available")
                 return
             }
             
@@ -177,6 +188,7 @@ class CameraModel: NSObject, ObservableObject {
             }
             
         } catch {
+            session.commitConfiguration() // Important: commit before handling error
             print("Camera setup error: \(error)")
         }
     }

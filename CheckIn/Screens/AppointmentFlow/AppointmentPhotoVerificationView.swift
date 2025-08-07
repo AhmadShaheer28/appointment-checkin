@@ -47,7 +47,7 @@ struct AppointmentPhotoVerificationView: View {
                     ZStack {
                         RoundedRectangle(cornerRadius: 12)
                             .fill(Color.white)
-                            .frame(width: screenWidth * 0.5, height: screenWidth * 0.7)
+                            .frame(width: screenWidth * 0.26, height: screenWidth * 0.45)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12)
                                     .stroke(Color.gray.opacity(0.3), lineWidth: 1)
@@ -57,7 +57,7 @@ struct AppointmentPhotoVerificationView: View {
                             Image(uiImage: capturedImage)
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
-                                .frame(width: screenWidth * 0.5, height: screenWidth * 0.7)
+                                .frame(width: screenWidth * 0.26, height: screenWidth * 0.45)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                         } else {
                             // Placeholder if no image
@@ -197,7 +197,7 @@ struct AppointmentPhotoVerificationView: View {
             timeText.draw(at: CGPoint(x: 50, y: 480), withAttributes: redAttributes)
             
             // Draw the captured photo
-            let imageRect = CGRect(x: 50, y: 520, width: 200, height: 150)
+            let imageRect = CGRect(x: 50, y: 520, width: 150, height: 300)
             image.draw(in: imageRect)
         }
         

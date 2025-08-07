@@ -102,7 +102,7 @@ class AppointmentDataModel: ObservableObject {
             timeText.draw(at: CGPoint(x: 50, y: 480), withAttributes: redAttributes)
             
             // Draw the captured photo
-            let imageRect = CGRect(x: 50, y: 520, width: 200, height: 150)
+            let imageRect = CGRect(x: 50, y: 520, width: 200, height: 300)
             image.draw(in: imageRect)
         }
     }
