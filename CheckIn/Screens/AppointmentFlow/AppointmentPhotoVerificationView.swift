@@ -47,7 +47,7 @@ struct AppointmentPhotoVerificationView: View {
                     ZStack {
                         RoundedRectangle(cornerRadius: 12)
                             .fill(Color.white)
-                            .frame(width: screenWidth * 0.26, height: screenWidth * 0.45)
+                            .frame(width: screenWidth * 0.3, height: screenWidth * 0.45)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12)
                                     .stroke(Color.gray.opacity(0.3), lineWidth: 1)
@@ -57,8 +57,9 @@ struct AppointmentPhotoVerificationView: View {
                             Image(uiImage: capturedImage)
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
-                                .frame(width: screenWidth * 0.26, height: screenWidth * 0.45)
+                                .frame(width: screenWidth * 0.3, height: screenWidth * 0.45)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
+                            
                         } else {
                             // Placeholder if no image
                             VStack(spacing: 20) {
@@ -128,9 +129,126 @@ struct AppointmentPhotoVerificationView: View {
     
     private func savePhotoAsPDF() {
         guard let image = appointmentData.capturedPhoto else { return }
+
+        let pageWidth: CGFloat = 612
+        let pageHeight: CGFloat = 792
+        let margin: CGFloat = 50
+
+        let pdfRenderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: pageWidth, height: pageHeight))
+
+        let pdfData = pdfRenderer.pdfData { context in
+            context.beginPage()
+            var currentY: CGFloat = margin
+
+            // Title
+            let titleAttributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.boldSystemFont(ofSize: 24),
+                .foregroundColor: UIColor.systemBlue
+            ]
+            "Check-In Photo Verification".draw(at: CGPoint(x: margin, y: currentY), withAttributes: titleAttributes)
+            currentY += 40
+
+            // Name Attributes
+            let textAttributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 14),
+                .foregroundColor: UIColor.black
+            ]
+
+            // Red Text Attributes (used for emphasis)
+            let redAttributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 14),
+                .foregroundColor: UIColor.black
+            ]
+
+            // Caregiver Name
+            let caregiverText = "Caregiver Name: \(appointmentData.caregiverFullName)"
+            let caregiverAttr = NSMutableAttributedString(string: caregiverText, attributes: textAttributes)
+            caregiverAttr.addAttributes(redAttributes, range: NSRange(location: 16, length: appointmentData.caregiverFullName.count))
+            caregiverAttr.draw(at: CGPoint(x: margin, y: currentY))
+            currentY += 20
+
+            // Claimant Name
+            let claimantText = "Claimant Name: \(appointmentData.childFullName)"
+            let claimantAttr = NSMutableAttributedString(string: claimantText, attributes: textAttributes)
+            claimantAttr.addAttributes(redAttributes, range: NSRange(location: 15, length: appointmentData.childFullName.count))
+            claimantAttr.draw(at: CGPoint(x: margin, y: currentY))
+            currentY += 30
+
+            // Disclaimer
+            let disclaimerText = String.evaluationDisclaimer
+            let disclaimerAttributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 12),
+                .foregroundColor: UIColor.black
+            ]
+            let disclaimerRect = CGRect(x: margin, y: currentY, width: pageWidth - 2 * margin, height: 100)
+            disclaimerText.draw(in: disclaimerRect, withAttributes: disclaimerAttributes)
+            currentY += 110
+
+            // Signature Label
+            "Signature".draw(at: CGPoint(x: margin, y: currentY), withAttributes: redAttributes)
+            currentY += 20
+
+            // Signature Image
+            if let signatureImage = appointmentData.signatureImage {
+                let sigHeight: CGFloat = 60
+                let sigWidth: CGFloat = 200
+                let sigRect = CGRect(x: margin, y: currentY, width: sigWidth, height: sigHeight)
+                signatureImage.draw(in: sigRect)
+                currentY += sigHeight + 10
+            }
+
+            // Date & Time
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "MM/dd/yyyy"
+            let timeFormatter = DateFormatter()
+            timeFormatter.dateFormat = "hh:mm a"
+
+            let dateText = "Date: \(dateFormatter.string(from: appointmentData.checkInDate))"
+            let timeText = "Time: \(timeFormatter.string(from: appointmentData.checkInDate))"
+
+            dateText.draw(at: CGPoint(x: margin, y: currentY), withAttributes: redAttributes)
+            currentY += 20
+            timeText.draw(at: CGPoint(x: margin, y: currentY), withAttributes: redAttributes)
+            currentY += 30
+
+            // Image: Captured Photo
+            let maxImageWidth: CGFloat = pageWidth - 2 * margin
+            let maxImageHeight: CGFloat = pageHeight - currentY - 40 // leave bottom margin
+            let imageSize = image.size
+
+            let widthRatio = maxImageWidth / imageSize.width
+            let heightRatio = maxImageHeight / imageSize.height
+            let scale = min(widthRatio, heightRatio)
+
+            let scaledWidth = imageSize.width * scale
+            let scaledHeight = imageSize.height * scale
+
+            let x = (pageWidth - scaledWidth) / 2
+            let imageRect = CGRect(x: x, y: currentY, width: scaledWidth, height: scaledHeight)
+            image.draw(in: imageRect)
+        }
         
+        // Save PDF to documents directory
+        if let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            let fileURL = documentsDirectory.appendingPathComponent("checkin_\(appointmentData.caregiverLastName)_\(Date().timeIntervalSince1970).pdf")
+            
+            do {
+                try pdfData.write(to: fileURL)
+                print("PDF saved to: \(fileURL)")
+            } catch {
+                print("Error saving PDF: \(error)")
+            }
+        }
+    }
+
+    
+    private func _savePhotoAsPDF() {
+        guard let image = appointmentData.capturedPhoto else { return }
+        
+        let pageWidth: CGFloat = 612
+        let pageHeight: CGFloat = 792
         // Create PDF document (standard letter size)
-        let pdfRenderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: 612, height: 792))
+        let pdfRenderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: pageWidth, height: pageHeight))
         
         let pdfData = pdfRenderer.pdfData { context in
             context.beginPage()
@@ -197,7 +315,21 @@ struct AppointmentPhotoVerificationView: View {
             timeText.draw(at: CGPoint(x: 50, y: 480), withAttributes: redAttributes)
             
             // Draw the captured photo
-            let imageRect = CGRect(x: 50, y: 520, width: 150, height: 300)
+            let maxWidth: CGFloat = pageWidth - 100  // 50pt margin on each side
+            let maxHeight: CGFloat = 250             // You can adjust based on layout
+            let imageSize = image.size
+            
+            let widthRatio = maxWidth / imageSize.width
+            let heightRatio = maxHeight / imageSize.height
+            let scale = min(widthRatio, heightRatio)
+            
+            let scaledWidth = imageSize.width * scale
+            let scaledHeight = imageSize.height * scale
+            
+            let x = (pageWidth - scaledWidth) / 2
+            let y: CGFloat = 520  // Keeps your existing layout
+            
+            let imageRect = CGRect(x: x, y: y, width: scaledWidth, height: scaledHeight)
             image.draw(in: imageRect)
         }
         
